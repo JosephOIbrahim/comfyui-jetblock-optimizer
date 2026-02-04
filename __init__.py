@@ -2,24 +2,38 @@
 ComfyUI JetBlock Optimizer v4.0
 ===============================
 
-Full Nemotron 3 hybrid architecture support with:
-- Mamba-2 deterministic execution
-- MoE routing determinism
-- Batch-invariant operators (ThinkingMachines)
+Batch-invariant determinism for any ComfyUI model.
+
+Based on ThinkingMachines research: batch-size variance in GPU kernels
+causes non-determinism, not temperature settings. JetBlock fixes this
+at the tensor operation level.
+
+Supports:
+- Universal determinism (any model: SD, SDXL, Flux, LTX Video)
+- Nemotron 3 hybrid architecture optimization (Mamba-2 + MoE + Attention)
 - Cascade mode control (/think vs /no_think)
-- NVFP4 quantization support (coming soon)
 
 Optimized for RTX 4090 with 24GB VRAM
 
 References:
-- NVIDIA CES 2026 Context Memory Platform
-- ThinkingMachines batch-invariant-ops research
+- ThinkingMachines "Defeating Nondeterminism in LLM Inference" (2025)
 - Nemotron 3 Technical Report
 """
 
 __version__ = "4.0.0"
 
-from .nodes import NODE_CLASS_MAPPINGS, NODE_DISPLAY_NAME_MAPPINGS
+# Import v4 nodes directly (nodes.py is kept for backwards compat only)
+try:
+    from .nodes_v4 import V4_NODE_CLASS_MAPPINGS, V4_NODE_DISPLAY_NAME_MAPPINGS
+
+    NODE_CLASS_MAPPINGS = dict(V4_NODE_CLASS_MAPPINGS)
+    NODE_DISPLAY_NAME_MAPPINGS = dict(V4_NODE_DISPLAY_NAME_MAPPINGS)
+    V4_LOADED = True
+except ImportError as e:
+    print(f"[JetBlock] Warning: v4 nodes failed to load: {e}")
+    NODE_CLASS_MAPPINGS = {}
+    NODE_DISPLAY_NAME_MAPPINGS = {}
+    V4_LOADED = False
 
 __all__ = ['NODE_CLASS_MAPPINGS', 'NODE_DISPLAY_NAME_MAPPINGS', '__version__']
 
@@ -28,12 +42,11 @@ WEB_DIRECTORY = "./js"
 # Startup message
 print("=" * 60)
 print(f"JetBlock Optimizer v{__version__} loaded")
-print("=" * 60)
-print("NEW in v4.0:")
-print("  - Full Nemotron 3 hybrid architecture support")
-print("  - Mamba-2 deterministic execution")
-print("  - Batch-invariant operators")
-print("  - Cascade mode control (/think vs /no_think)")
-print("=" * 60)
-print("Nodes: 6 v4 nodes (v2 legacy removed)")
+if V4_LOADED:
+    print(f"  {len(NODE_CLASS_MAPPINGS)} nodes registered")
+    for name in sorted(NODE_CLASS_MAPPINGS.keys()):
+        print(f"    - {name}")
+else:
+    print("  v4 nodes UNAVAILABLE (import error)")
+    print("  No nodes registered")
 print("=" * 60)

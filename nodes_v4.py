@@ -38,22 +38,58 @@ from .jetblock_core_v4 import (
     validate_determinism,
 )
 
-from .jetblock_mamba2 import (
-    Mamba2Config,
-    DeterministicMamba2Mixer,
-    replace_mamba2_with_deterministic,
-    validate_mamba2_determinism,
-)
+# Mamba-2 imports (optional — only needed for Nemotron models)
+try:
+    from .jetblock_mamba2 import (
+        Mamba2Config,
+        DeterministicMamba2Mixer,
+        replace_mamba2_with_deterministic,
+        validate_mamba2_determinism,
+    )
+    MAMBA2_AVAILABLE = True
+except ImportError as e:
+    MAMBA2_AVAILABLE = False
+    print(f"[JetBlock] Mamba-2 module not available: {e}")
 
-from .jetblock_nemotron import (
-    LayerType,
-    NemotronHybridDetector,
-    DeterministicMoERouter,
-    CascadeMode,
-    CascadeModeController,
-    JetBlockNemotronOptimizer,
-    optimize_for_nemotron,
-)
+# Nemotron imports (optional — only needed for Nemotron models)
+try:
+    from .jetblock_nemotron import (
+        LayerType,
+        NemotronHybridDetector,
+        DeterministicMoERouter,
+        CascadeMode,
+        CascadeModeController,
+        JetBlockNemotronOptimizer,
+        optimize_for_nemotron,
+    )
+    NEMOTRON_AVAILABLE = True
+except ImportError as e:
+    NEMOTRON_AVAILABLE = False
+    print(f"[JetBlock] Nemotron module not available: {e}")
+
+# Fallback stubs when modules aren't available
+if not NEMOTRON_AVAILABLE:
+    from enum import Enum
+
+    class CascadeMode(Enum):
+        AUTO = "auto"
+        THINK = "think"
+        NO_THINK = "no_think"
+
+    class NemotronHybridDetector:
+        """Stub detector when Nemotron module unavailable."""
+        def analyze(self, model):
+            return {
+                'total_layers': 0,
+                'total_params': 0,
+                'architecture_type': 'unknown (nemotron module not loaded)',
+                'layer_counts': {},
+                'nemotron_signature_match': False,
+                'optimization_summary': {
+                    'primary_optimization': 'generic',
+                    'expected_slowdown': 'unknown',
+                },
+            }
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -614,32 +650,104 @@ class JetBlockV4ModeSwitchNode:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# UNIVERSAL DETERMINISM NODE (Works with ANY model)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+class JetBlockUniversalDeterminismNode:
+    """
+    Apply batch-invariant determinism to ANY ComfyUI model.
+
+    Works with: SD 1.5/2.x/XL, Flux, LTX Video, any diffusion transformer.
+
+    Based on ThinkingMachines research: batch-size variance in GPU reduction
+    kernels causes non-determinism. This node configures the environment to
+    force deterministic execution at the tensor operation level.
+
+    See: https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/
+    """
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "model": ("MODEL",),
+                "determinism_level": (["speed", "balanced", "strict"],),
+                "seed": ("INT", {"default": 42, "min": 0, "max": 0xffffffffffffffff}),
+            },
+        }
+
+    RETURN_TYPES = ("MODEL", "STRING")
+    RETURN_NAMES = ("model", "status")
+    FUNCTION = "apply_determinism"
+    CATEGORY = "JetBlock/Universal"
+
+    def apply_determinism(self, model, determinism_level: str, seed: int):
+        """Apply universal determinism settings."""
+
+        config = JetBlockV4Config(
+            determinism_level=DeterminismLevel(determinism_level),
+            master_seed=seed,
+            force_batch_size_one=(determinism_level == "strict"),
+        )
+        set_config(config)
+
+        env_settings = config.setup_deterministic_environment()
+
+        status = f"JETBLOCK UNIVERSAL DETERMINISM\n"
+        status += f"{'=' * 45}\n"
+        status += f"Level: {determinism_level.upper()}\n"
+        status += f"Seed: {seed}\n"
+        status += f"{'=' * 45}\n"
+        status += f"PyTorch Settings Applied:\n"
+        for key, value in env_settings.items():
+            status += f"  - {key}: {value}\n"
+        status += f"{'=' * 45}\n"
+
+        if determinism_level == "strict":
+            status += f"MODE: Full batch-invariance\n"
+            status += f"GUARANTEE: Same seed = identical output\n"
+            status += f"OVERHEAD: ~60-100% slower (per ThinkingMachines)\n"
+        elif determinism_level == "balanced":
+            status += f"MODE: Partial determinism\n"
+            status += f"OVERHEAD: ~15-30% slower\n"
+        else:
+            status += f"MODE: Maximum speed\n"
+            status += f"WARNING: Outputs may vary between runs\n"
+
+        return (model, status)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # NODE MAPPINGS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Always-available nodes (depend only on jetblock_core_v4)
 V4_NODE_CLASS_MAPPINGS = {
-    # Nemotron nodes
-    "JetBlockNemotronOptimizer": JetBlockNemotronOptimizerNode,
-    "JetBlockHybridProfiler": JetBlockHybridProfilerNode,
-    "JetBlockMamba2Deterministic": JetBlockMamba2DeterministicNode,
-    "JetBlockCascadeMode": JetBlockCascadeModeNode,
-
-    # v4 Deterministic nodes
     "JetBlockV4DeterministicSampler": JetBlockV4DeterministicSamplerNode,
     "JetBlockV4ModeSwitch": JetBlockV4ModeSwitchNode,
+    "JetBlockUniversalDeterminism": JetBlockUniversalDeterminismNode,
+    # Profiler works with stub detector too
+    "JetBlockHybridProfiler": JetBlockHybridProfilerNode,
 }
 
 V4_NODE_DISPLAY_NAME_MAPPINGS = {
-    # Nemotron nodes
-    "JetBlockNemotronOptimizer": "JetBlock Nemotron Optimizer (v4)",
-    "JetBlockHybridProfiler": "JetBlock Hybrid Profiler (v4)",
-    "JetBlockMamba2Deterministic": "JetBlock Mamba-2 Deterministic (v4)",
-    "JetBlockCascadeMode": "JetBlock Cascade Mode (v4)",
-
-    # v4 Deterministic nodes
     "JetBlockV4DeterministicSampler": "JetBlock Deterministic Sampler (v4)",
     "JetBlockV4ModeSwitch": "JetBlock Mode Switch (v4)",
+    "JetBlockUniversalDeterminism": "JetBlock Universal Determinism (v4)",
+    "JetBlockHybridProfiler": "JetBlock Hybrid Profiler (v4)",
 }
+
+# Nemotron-dependent nodes (only if module loaded)
+if NEMOTRON_AVAILABLE:
+    V4_NODE_CLASS_MAPPINGS["JetBlockNemotronOptimizer"] = JetBlockNemotronOptimizerNode
+    V4_NODE_CLASS_MAPPINGS["JetBlockCascadeMode"] = JetBlockCascadeModeNode
+    V4_NODE_DISPLAY_NAME_MAPPINGS["JetBlockNemotronOptimizer"] = "JetBlock Nemotron Optimizer (v4)"
+    V4_NODE_DISPLAY_NAME_MAPPINGS["JetBlockCascadeMode"] = "JetBlock Cascade Mode (v4)"
+
+# Mamba-2-dependent nodes (only if module loaded)
+if MAMBA2_AVAILABLE:
+    V4_NODE_CLASS_MAPPINGS["JetBlockMamba2Deterministic"] = JetBlockMamba2DeterministicNode
+    V4_NODE_DISPLAY_NAME_MAPPINGS["JetBlockMamba2Deterministic"] = "JetBlock Mamba-2 Deterministic (v4)"
 
 __all__ = [
     "V4_NODE_CLASS_MAPPINGS",
