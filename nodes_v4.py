@@ -1,18 +1,17 @@
 """
-JetBlock v4.0 ComfyUI Nodes
-===========================
+Deterministic Toolkit v4.1 - ComfyUI Nodes
+============================================
 
-Full Nemotron 3 optimization nodes with:
+Batch-invariant deterministic inference nodes:
+- Universal determinism (any model)
 - Hybrid architecture detection
 - Mamba-2 determinism
 - MoE routing determinism
 - Cascade mode control (/think vs /no_think)
-- NVFP4 quantization (placeholder)
 
-These nodes build on v2.0 ThinkingMachines determinism integration
-and add complete Nemotron 3 hybrid architecture support.
+Based on ThinkingMachines research on batch-invariant operators.
 
-Version: 4.0.0
+Version: 4.1.0
 """
 
 import torch
@@ -49,7 +48,7 @@ try:
     MAMBA2_AVAILABLE = True
 except ImportError as e:
     MAMBA2_AVAILABLE = False
-    print(f"[JetBlock] Mamba-2 module not available: {e}")
+    print(f"[Deterministic Toolkit] Mamba-2 module not available: {e}")
 
 # Nemotron imports (optional — only needed for Nemotron models)
 try:
@@ -65,7 +64,7 @@ try:
     NEMOTRON_AVAILABLE = True
 except ImportError as e:
     NEMOTRON_AVAILABLE = False
-    print(f"[JetBlock] Nemotron module not available: {e}")
+    print(f"[Deterministic Toolkit] Nemotron module not available: {e}")
 
 # Fallback stubs when modules aren't available
 if not NEMOTRON_AVAILABLE:
@@ -130,7 +129,7 @@ class JetBlockNemotronOptimizerNode:
     RETURN_TYPES = ("MODEL", "STRING", "STRING")
     RETURN_NAMES = ("optimized_model", "architecture_report", "optimization_report")
     FUNCTION = "optimize"
-    CATEGORY = "JetBlock/Nemotron"
+    CATEGORY = "Deterministic/Nemotron"
 
     def optimize(
         self,
@@ -249,7 +248,7 @@ class JetBlockHybridProfilerNode:
     RETURN_TYPES = ("STRING", "STRING")
     RETURN_NAMES = ("architecture_summary", "detailed_report")
     FUNCTION = "profile"
-    CATEGORY = "JetBlock/Analysis"
+    CATEGORY = "Deterministic/Analysis"
 
     def profile(self, model):
         """Profile model architecture."""
@@ -326,7 +325,7 @@ class JetBlockMamba2DeterministicNode:
     RETURN_TYPES = ("MODEL", "STRING")
     RETURN_NAMES = ("model", "status")
     FUNCTION = "apply_mamba2_determinism"
-    CATEGORY = "JetBlock/Nemotron"
+    CATEGORY = "Deterministic/Nemotron"
 
     def apply_mamba2_determinism(
         self,
@@ -400,7 +399,7 @@ class JetBlockCascadeModeNode:
     RETURN_TYPES = ("STRING", "INT", "STRING")
     RETURN_NAMES = ("selected_mode", "thinking_budget", "analysis")
     FUNCTION = "set_mode"
-    CATEGORY = "JetBlock/Nemotron"
+    CATEGORY = "Deterministic/Nemotron"
 
     def set_mode(
         self,
@@ -492,7 +491,7 @@ class JetBlockV4DeterministicSamplerNode:
     RETURN_TYPES = ("LATENT", "STRING", "STRING")
     RETURN_NAMES = ("samples", "checksum", "report")
     FUNCTION = "sample"
-    CATEGORY = "JetBlock/Deterministic"
+    CATEGORY = "Deterministic/Deterministic"
 
     def sample(
         self,
@@ -556,7 +555,7 @@ class JetBlockV4DeterministicSamplerNode:
         checksum = compute_tensor_checksum(final_samples)
 
         # Build report
-        report = f"JETBLOCK v4.0 DETERMINISTIC SAMPLING\n"
+        report = f"DETERMINISTIC TOOLKIT v4.1 SAMPLING\n"
         report += f"{'=' * 50}\n"
         report += f"Determinism Level: {determinism_level}\n"
         report += f"Seed: {seed}\n"
@@ -603,7 +602,7 @@ class JetBlockV4ModeSwitchNode:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("status",)
     FUNCTION = "switch_mode"
-    CATEGORY = "JetBlock/Deterministic"
+    CATEGORY = "Deterministic/Deterministic"
 
     def switch_mode(self, mode: str, seed: int):
         """Switch v4.0 operating mode."""
@@ -617,7 +616,7 @@ class JetBlockV4ModeSwitchNode:
 
         env_settings = config.setup_deterministic_environment()
 
-        status = f"JETBLOCK v4.0 MODE: {mode.upper()}\n"
+        status = f"DETERMINISTIC TOOLKIT v4.1 MODE: {mode.upper()}\n"
         status += f"{'=' * 40}\n"
         status += f"Seed: {seed}\n"
 
@@ -679,7 +678,7 @@ class JetBlockUniversalDeterminismNode:
     RETURN_TYPES = ("MODEL", "STRING")
     RETURN_NAMES = ("model", "status")
     FUNCTION = "apply_determinism"
-    CATEGORY = "JetBlock/Universal"
+    CATEGORY = "Deterministic/Universal"
 
     def apply_determinism(self, model, determinism_level: str, seed: int):
         """Apply universal determinism settings."""
@@ -693,7 +692,7 @@ class JetBlockUniversalDeterminismNode:
 
         env_settings = config.setup_deterministic_environment()
 
-        status = f"JETBLOCK UNIVERSAL DETERMINISM\n"
+        status = f"UNIVERSAL DETERMINISM\n"
         status += f"{'=' * 45}\n"
         status += f"Level: {determinism_level.upper()}\n"
         status += f"Seed: {seed}\n"
@@ -731,23 +730,23 @@ V4_NODE_CLASS_MAPPINGS = {
 }
 
 V4_NODE_DISPLAY_NAME_MAPPINGS = {
-    "JetBlockV4DeterministicSampler": "JetBlock Deterministic Sampler (v4)",
-    "JetBlockV4ModeSwitch": "JetBlock Mode Switch (v4)",
-    "JetBlockUniversalDeterminism": "JetBlock Universal Determinism (v4)",
-    "JetBlockHybridProfiler": "JetBlock Hybrid Profiler (v4)",
+    "JetBlockV4DeterministicSampler": "Deterministic Sampler (v4)",
+    "JetBlockV4ModeSwitch": "Deterministic Mode Switch (v4)",
+    "JetBlockUniversalDeterminism": "Universal Determinism (v4)",
+    "JetBlockHybridProfiler": "Hybrid Architecture Profiler (v4)",
 }
 
 # Nemotron-dependent nodes (only if module loaded)
 if NEMOTRON_AVAILABLE:
     V4_NODE_CLASS_MAPPINGS["JetBlockNemotronOptimizer"] = JetBlockNemotronOptimizerNode
     V4_NODE_CLASS_MAPPINGS["JetBlockCascadeMode"] = JetBlockCascadeModeNode
-    V4_NODE_DISPLAY_NAME_MAPPINGS["JetBlockNemotronOptimizer"] = "JetBlock Nemotron Optimizer (v4)"
-    V4_NODE_DISPLAY_NAME_MAPPINGS["JetBlockCascadeMode"] = "JetBlock Cascade Mode (v4)"
+    V4_NODE_DISPLAY_NAME_MAPPINGS["JetBlockNemotronOptimizer"] = "Nemotron Deterministic Optimizer (v4)"
+    V4_NODE_DISPLAY_NAME_MAPPINGS["JetBlockCascadeMode"] = "Cascade Mode Control (v4)"
 
 # Mamba-2-dependent nodes (only if module loaded)
 if MAMBA2_AVAILABLE:
     V4_NODE_CLASS_MAPPINGS["JetBlockMamba2Deterministic"] = JetBlockMamba2DeterministicNode
-    V4_NODE_DISPLAY_NAME_MAPPINGS["JetBlockMamba2Deterministic"] = "JetBlock Mamba-2 Deterministic (v4)"
+    V4_NODE_DISPLAY_NAME_MAPPINGS["JetBlockMamba2Deterministic"] = "Mamba-2 Deterministic (v4)"
 
 __all__ = [
     "V4_NODE_CLASS_MAPPINGS",

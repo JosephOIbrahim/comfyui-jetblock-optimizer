@@ -1,8 +1,8 @@
-# JetBlock Optimizer for ComfyUI
+# ComfyUI Deterministic Toolkit
 
 **Batch-invariant deterministic inference for any diffusion model.**
 
-[![Version](https://img.shields.io/badge/version-4.0.1-blue.svg)](https://github.com/JosephOIbrahim/comfyui-jetblock-optimizer)
+[![Version](https://img.shields.io/badge/version-4.1.0-blue.svg)](https://github.com/JosephOIbrahim/comfyui-deterministic-toolkit)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![ComfyUI](https://img.shields.io/badge/ComfyUI-compatible-orange.svg)](https://github.com/comfyanonymous/ComfyUI)
@@ -19,7 +19,7 @@ This is why your "reproducible" workflows produce slightly different outputs eac
 
 ## The Solution
 
-JetBlock implements **batch-invariant operators** based on the [ThinkingMachines research](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/):
+This toolkit implements **batch-invariant operators** based on the [ThinkingMachines research](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/):
 
 - **RMSNorm**: Fixed reduction strategy, not dependent on batch size
 - **MatMul**: No Split-K parallelization variance
@@ -35,13 +35,13 @@ JetBlock implements **batch-invariant operators** based on the [ThinkingMachines
 
 **ComfyUI Manager** (Recommended)
 ```
-Search "JetBlock Optimizer" in ComfyUI Manager
+Search "Deterministic Toolkit" in ComfyUI Manager
 ```
 
 **Manual**
 ```bash
 cd ComfyUI/custom_nodes
-git clone https://github.com/JosephOIbrahim/comfyui-jetblock-optimizer.git
+git clone https://github.com/JosephOIbrahim/comfyui-deterministic-toolkit.git
 ```
 
 ### Basic Usage
@@ -52,7 +52,7 @@ Add the **Universal Determinism** node to any workflow:
 Load Checkpoint (any model)
         |
         v
-JetBlock Universal Determinism (strict, seed=12345)
+Universal Determinism (strict, seed=12345)
         |
         v
 [Your existing workflow]
@@ -71,18 +71,18 @@ Run twice. Compare outputs. They're identical.
 
 | Node | Purpose |
 |------|---------|
-| **JetBlock Universal Determinism** | Apply batch-invariant determinism to any model |
-| **JetBlock Deterministic Sampler** | Full deterministic sampling with checksum verification |
-| **JetBlock Mode Switch** | Toggle between speed/balanced/strict modes |
-| **JetBlock Hybrid Profiler** | Analyze model architecture |
+| **Universal Determinism** | Apply batch-invariant determinism to any model |
+| **Deterministic Sampler** | Full deterministic sampling with checksum verification |
+| **Deterministic Mode Switch** | Toggle between speed/balanced/strict modes |
+| **Hybrid Architecture Profiler** | Analyze model architecture |
 
 ### Nemotron-Specific (Requires Dependencies)
 
 | Node | Purpose |
 |------|---------|
-| **JetBlock Nemotron Optimizer** | Full Nemotron 3 hybrid architecture optimization |
-| **JetBlock Cascade Mode** | Control /think vs /no_think reasoning budget |
-| **JetBlock Mamba-2 Deterministic** | Mamba-2 state-space layer determinism |
+| **Nemotron Deterministic Optimizer** | Full Nemotron 3 hybrid architecture determinism |
+| **Cascade Mode Control** | Control /think vs /no_think reasoning budget |
+| **Mamba-2 Deterministic** | Mamba-2 state-space layer determinism |
 
 ---
 
@@ -117,7 +117,7 @@ Run twice. Compare outputs. They're identical.
 
 ## Node Reference
 
-### JetBlock Universal Determinism
+### Universal Determinism
 
 The main node. Works with SD 1.5, SD 2.x, SDXL, Flux, LTX Video, and any other diffusion model.
 
@@ -138,7 +138,7 @@ The main node. Works with SD 1.5, SD 2.x, SDXL, Flux, LTX Video, and any other d
 
 ---
 
-### JetBlock Deterministic Sampler
+### Deterministic Sampler
 
 Full deterministic sampling with verification. Processes each batch item independently for guaranteed reproducibility.
 
@@ -168,7 +168,7 @@ Full deterministic sampling with verification. Processes each batch item indepen
 
 ---
 
-### JetBlock Mode Switch
+### Deterministic Mode Switch
 
 Quick toggle between performance modes without full node replacement.
 
@@ -187,9 +187,9 @@ Quick toggle between performance modes without full node replacement.
 
 ---
 
-### JetBlock Hybrid Profiler
+### Hybrid Architecture Profiler
 
-Analyze any model's architecture. Useful for understanding layer composition before optimization.
+Analyze any model's architecture. Useful for understanding layer composition before applying determinism.
 
 **Inputs**
 
@@ -217,13 +217,13 @@ Load Checkpoint
 CLIP Text Encode ----+
         |            |
         v            v
-JetBlock Universal Determinism (strict, seed=42)
+Universal Determinism (strict, seed=42)
         |
         v
 Empty Latent Image
         |
         v
-JetBlock Deterministic Sampler (seed=42)
+Deterministic Sampler (seed=42)
         |
         v
 VAE Decode
@@ -238,7 +238,7 @@ Save Image
 Load Checkpoint
         |
         v
-JetBlock Mode Switch (speed)
+Deterministic Mode Switch (speed)
         |
         v
 [Standard KSampler workflow]
@@ -250,7 +250,7 @@ JetBlock Mode Switch (speed)
 Load Checkpoint
         |
         v
-JetBlock Hybrid Profiler
+Hybrid Architecture Profiler
         |
         v
 Show Text (view architecture breakdown)
@@ -271,7 +271,7 @@ Batch size 4:  (A + B) + (C + D)      = result2  (different!)
 
 Floating-point addition is **not associative**. Different groupings produce different results.
 
-JetBlock forces consistent computation order:
+Batch-invariant operators force consistent computation order:
 
 ```
 Batch size 1:  A + B + C + D          = result
@@ -289,8 +289,8 @@ torch.set_float32_matmul_precision('highest')
 
 ### Batch-Invariant Operators
 
-| Operator | Standard | JetBlock |
-|----------|----------|----------|
+| Operator | Standard | Deterministic Toolkit |
+|----------|----------|----------------------|
 | RMSNorm | Batched reduction | Per-sample, FP32 |
 | MatMul | Split-K parallel | No Split-K, FP32 |
 | Attention | Variable split-count | Fixed split-SIZE |
@@ -348,7 +348,7 @@ mamba-ssm>=1.2.0
 ### Outputs still vary between runs
 
 1. Ensure `determinism_level="strict"`
-2. Use `JetBlock Deterministic Sampler` instead of standard KSampler
+2. Use the Deterministic Sampler instead of standard KSampler
 3. Verify same seed across all runs
 4. Check that no other nodes modify RNG state
 
@@ -360,7 +360,7 @@ mamba-ssm>=1.2.0
 
 ### Import errors on startup
 
-JetBlock gracefully handles missing dependencies. Core nodes (Universal Determinism, Deterministic Sampler, Mode Switch, Hybrid Profiler) always load. Nemotron-specific nodes require additional packages.
+The toolkit gracefully handles missing dependencies. Core nodes (Universal Determinism, Deterministic Sampler, Mode Switch, Profiler) always load. Nemotron-specific nodes require additional packages.
 
 ### CUDA errors
 
@@ -375,7 +375,7 @@ JetBlock gracefully handles missing dependencies. Core nodes (Universal Determin
 ### Python Import
 
 ```python
-from comfyui_jetblock_optimizer.jetblock_core_v4 import (
+from comfyui_deterministic_toolkit.jetblock_core_v4 import (
     JetBlockV4Config,
     DeterminismLevel,
     get_config,

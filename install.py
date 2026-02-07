@@ -1,6 +1,6 @@
 """
-Installation script for JetBlock Optimizer
-Checks dependencies and optimizes for RTX 4090
+Installation script for Deterministic Toolkit
+Checks dependencies and validates GPU compatibility
 """
 
 import subprocess
@@ -12,12 +12,12 @@ def install_dependencies():
     """Install required dependencies"""
 
     print("=" * 60)
-    print("JetBlock Optimizer Installation")
+    print("Deterministic Toolkit Installation")
     print("=" * 60)
 
     # Check CUDA availability
     if not torch.cuda.is_available():
-        print("WARNING: CUDA not available. JetBlock will run in CPU mode.")
+        print("WARNING: CUDA not available. Toolkit will run in CPU mode.")
     else:
         gpu_name = torch.cuda.get_device_name(0)
         vram = torch.cuda.get_device_properties(0).total_memory / (1024**3)
@@ -28,7 +28,7 @@ def install_dependencies():
         if "4090" in gpu_name:
             print("[OK] RTX 4090 detected - Optimal configuration will be used")
         else:
-            print(f"! Different GPU detected. Optimizations may vary.")
+            print(f"! Different GPU detected. Performance may vary.")
 
     # Check PyTorch version
     torch_version = torch.__version__
@@ -53,10 +53,10 @@ def install_dependencies():
     print("=" * 60)
     print("\nUsage:")
     print("1. Restart ComfyUI")
-    print("2. Find 'JetBlock' nodes in the node menu")
-    print("3. Start with 'JetBlock Auto-Optimizer' node")
-    print("4. Use 'JetBlock Model Optimizer' to optimize specific models")
-    print("5. Monitor performance with 'JetBlock Benchmark' node")
+    print("2. Find 'Deterministic' nodes in the node menu")
+    print("3. Start with 'Universal Determinism' node")
+    print("4. Use 'Deterministic Sampler' for guaranteed reproducibility")
+    print("5. Use 'Hybrid Architecture Profiler' to analyze models")
 
     return True
 

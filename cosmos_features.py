@@ -1,5 +1,5 @@
 """
-Cosmos-Inspired Features for JetBlock Optimizer
+Cosmos-Inspired Features for Deterministic Toolkit
 Predictive loading, pattern learning, and intelligent optimization
 """
 

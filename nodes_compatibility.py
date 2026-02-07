@@ -1,5 +1,5 @@
 """
-ComfyUI Compatibility Nodes for JetBlock Optimizer
+ComfyUI Compatibility Nodes for Deterministic Toolkit
 """
 
 import json
@@ -28,7 +28,7 @@ class JetBlockCompatibilityChecker:
     RETURN_TYPES = ("STRING", "STRING", "FLOAT", "BOOLEAN", "BOOLEAN")
     RETURN_NAMES = ("compatibility_report", "optimization_level", "skip_ratio", "use_temporal_skip", "use_pattern_cache")
     FUNCTION = "check_compatibility"
-    CATEGORY = "JetBlock/Compatibility"
+    CATEGORY = "Deterministic/Compatibility"
 
     def check_compatibility(self, analyze_current, auto_adjust, workflow_json=""):
         """
@@ -98,7 +98,7 @@ class JetBlockSmartOptimizer:
     RETURN_TYPES = ("MODEL", "STRING")
     RETURN_NAMES = ("optimized_model", "optimization_report")
     FUNCTION = "smart_optimize"
-    CATEGORY = "JetBlock/Smart"
+    CATEGORY = "Deterministic/Smart"
 
     def smart_optimize(self, model, auto_detect, override_level, safe_mode):
         """
@@ -250,7 +250,7 @@ class JetBlockWorkflowProfiler:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("profiling_report",)
     FUNCTION = "profile_workflow"
-    CATEGORY = "JetBlock/Analysis"
+    CATEGORY = "Deterministic/Analysis"
 
     def profile_workflow(self, profile_depth, show_recommendations):
         """
@@ -259,7 +259,7 @@ class JetBlockWorkflowProfiler:
 
         report = []
         report.append("=" * 60)
-        report.append("JETBLOCK WORKFLOW PROFILING")
+        report.append("DETERMINISTIC TOOLKIT WORKFLOW PROFILING")
         report.append("=" * 60)
 
         # Placeholder for actual workflow profiling
@@ -323,7 +323,7 @@ class JetBlockSafetySwitch:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("status",)
     FUNCTION = "safety_switch"
-    CATEGORY = "JetBlock/Safety"
+    CATEGORY = "Deterministic/Safety"
 
     def safety_switch(self, enable_optimizations, reset_cache, verbose_logging):
         """
@@ -354,7 +354,7 @@ class JetBlockSafetySwitch:
             status_messages.append("- cuDNN benchmark: DISABLED")
 
         else:
-            status_messages.append("JetBlock Optimizations: ENABLED")
+            status_messages.append("Deterministic Toolkit: ENABLED")
 
         if reset_cache:
             # Clear all caches
@@ -390,8 +390,8 @@ COMPATIBILITY_NODE_CLASS_MAPPINGS = {
 }
 
 COMPATIBILITY_NODE_DISPLAY_NAME_MAPPINGS = {
-    "JetBlockCompatibilityChecker": "JetBlock Compatibility Checker",
-    "JetBlockSmartOptimizer": "JetBlock Smart Optimizer",
-    "JetBlockWorkflowProfiler": "JetBlock Workflow Profiler",
-    "JetBlockSafetySwitch": "JetBlock Safety Switch",
+    "JetBlockCompatibilityChecker": "Workflow Compatibility Checker",
+    "JetBlockSmartOptimizer": "Smart Deterministic Optimizer",
+    "JetBlockWorkflowProfiler": "Workflow Profiler",
+    "JetBlockSafetySwitch": "Safety Switch",
 }

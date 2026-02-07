@@ -32,7 +32,7 @@ class CosmosGPUMonitor:
     RETURN_TYPES = ("STRING", "FLOAT", "FLOAT", "FLOAT", "STRING")
     RETURN_NAMES = ("stats", "temperature", "power", "memory_used", "health_status")
     FUNCTION = "monitor_gpu"
-    CATEGORY = "JetBlock/Cosmos/Monitoring"
+    CATEGORY = "Deterministic/Cosmos/Monitoring"
 
     def monitor_gpu(self, update_interval, show_graph):
         """Monitor GPU statistics"""
@@ -107,7 +107,7 @@ class CosmosPredictiveLoader:
     RETURN_TYPES = ("STRING", "STRING")
     RETURN_NAMES = ("predictions", "preloaded_models")
     FUNCTION = "predict_and_preload"
-    CATEGORY = "JetBlock/Cosmos/Prediction"
+    CATEGORY = "Deterministic/Cosmos/Prediction"
 
     def predict_and_preload(self, current_node, enable_preloading, max_preload_gb):
         """Predict next nodes and preload models"""
@@ -177,7 +177,7 @@ class CosmosWorkflowLearner:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("learning_report",)
     FUNCTION = "learn_from_execution"
-    CATEGORY = "JetBlock/Cosmos/Learning"
+    CATEGORY = "Deterministic/Cosmos/Learning"
 
     def learn_from_execution(self, node_type, execution_time, model_used, save_patterns):
         """Record and learn from workflow execution"""
@@ -260,7 +260,7 @@ class CosmosInterpolationSampler:
     RETURN_TYPES = ("LATENT", "STRING")
     RETURN_NAMES = ("samples", "interpolation_stats")
     FUNCTION = "sample_with_interpolation"
-    CATEGORY = "JetBlock/Cosmos/Sampling"
+    CATEGORY = "Deterministic/Cosmos/Sampling"
 
     def sample_with_interpolation(self, model, positive, negative, latent_image,
                                  seed, steps, cfg, sampler_name, scheduler,
@@ -338,7 +338,7 @@ class CosmosDashboard:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("dashboard",)
     FUNCTION = "show_dashboard"
-    CATEGORY = "JetBlock/Cosmos/Monitoring"
+    CATEGORY = "Deterministic/Cosmos/Monitoring"
 
     def show_dashboard(self, refresh):
         """Display comprehensive dashboard"""
@@ -448,7 +448,7 @@ class CosmosAutoTuner:
     RETURN_TYPES = ("MODEL", "STRING")
     RETURN_NAMES = ("tuned_model", "tuning_report")
     FUNCTION = "auto_tune"
-    CATEGORY = "JetBlock/Cosmos/Auto"
+    CATEGORY = "Deterministic/Cosmos/Auto"
 
     def auto_tune(self, model, target_temperature, aggressive_mode):
         """Automatically tune optimization for target temperature"""

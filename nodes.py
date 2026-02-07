@@ -1,5 +1,5 @@
 """
-JetBlock Optimizer v4.0 - ComfyUI Node Registration
+Deterministic Toolkit v4.1 - ComfyUI Node Registration
 
 Only v4 nodes are exposed. Legacy v2 nodes have been removed.
 """

@@ -1,16 +1,16 @@
 """
-ComfyUI JetBlock Optimizer v4.0
-===============================
+ComfyUI Deterministic Toolkit v4.1
+===================================
 
-Batch-invariant determinism for any ComfyUI model.
+Batch-invariant deterministic inference for any ComfyUI model.
 
 Based on ThinkingMachines research: batch-size variance in GPU kernels
-causes non-determinism, not temperature settings. JetBlock fixes this
+causes non-determinism, not temperature settings. This toolkit fixes it
 at the tensor operation level.
 
 Supports:
 - Universal determinism (any model: SD, SDXL, Flux, LTX Video)
-- Nemotron 3 hybrid architecture optimization (Mamba-2 + MoE + Attention)
+- Nemotron 3 hybrid architecture (Mamba-2 + MoE + Attention)
 - Cascade mode control (/think vs /no_think)
 
 Optimized for RTX 4090 with 24GB VRAM
@@ -20,7 +20,7 @@ References:
 - Nemotron 3 Technical Report
 """
 
-__version__ = "4.0.0"
+__version__ = "4.1.0"
 
 # Import v4 nodes directly (nodes.py is kept for backwards compat only)
 try:
@@ -30,7 +30,7 @@ try:
     NODE_DISPLAY_NAME_MAPPINGS = dict(V4_NODE_DISPLAY_NAME_MAPPINGS)
     V4_LOADED = True
 except ImportError as e:
-    print(f"[JetBlock] Warning: v4 nodes failed to load: {e}")
+    print(f"[Deterministic Toolkit] Warning: v4 nodes failed to load: {e}")
     NODE_CLASS_MAPPINGS = {}
     NODE_DISPLAY_NAME_MAPPINGS = {}
     V4_LOADED = False
@@ -41,7 +41,7 @@ WEB_DIRECTORY = "./js"
 
 # Startup message
 print("=" * 60)
-print(f"JetBlock Optimizer v{__version__} loaded")
+print(f"Deterministic Toolkit v{__version__} loaded")
 if V4_LOADED:
     print(f"  {len(NODE_CLASS_MAPPINGS)} nodes registered")
     for name in sorted(NODE_CLASS_MAPPINGS.keys()):

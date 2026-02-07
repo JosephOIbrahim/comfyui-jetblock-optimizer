@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "comfyui-jetblock-optimizer"
-version = "4.0.0"
-description = "Full Nemotron 3 hybrid architecture optimization for ComfyUI with Mamba-2 determinism, MoE routing, and batch-invariant operators"
+name = "comfyui-deterministic-toolkit"
+version = "4.1.0"
+description = "Batch-invariant deterministic inference for ComfyUI. Guarantees identical outputs for identical inputs via batch-invariant operators, Mamba-2 determinism, and MoE routing."
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
@@ -13,11 +13,11 @@ authors = [
 ]
 keywords = [
     "comfyui",
+    "determinism",
+    "reproducibility",
+    "batch-invariant",
     "nemotron",
     "mamba2",
-    "determinism",
-    "llm",
-    "optimization",
     "nvidia",
     "rtx"
 ]
@@ -54,14 +54,14 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/josephibrahim/ComfyUI-JetBlock-Optimizer"
-Documentation = "https://github.com/josephibrahim/ComfyUI-JetBlock-Optimizer#readme"
-Repository = "https://github.com/josephibrahim/ComfyUI-JetBlock-Optimizer.git"
-Issues = "https://github.com/josephibrahim/ComfyUI-JetBlock-Optimizer/issues"
+Homepage = "https://github.com/JosephOIbrahim/comfyui-deterministic-toolkit"
+Documentation = "https://github.com/JosephOIbrahim/comfyui-deterministic-toolkit#readme"
+Repository = "https://github.com/JosephOIbrahim/comfyui-deterministic-toolkit.git"
+Issues = "https://github.com/JosephOIbrahim/comfyui-deterministic-toolkit/issues"
 
 [tool.setuptools]
-packages = ["comfyui_jetblock_optimizer"]
-package-dir = {"comfyui_jetblock_optimizer" = "."}
+packages = ["comfyui_deterministic_toolkit"]
+package-dir = {"comfyui_deterministic_toolkit" = "."}
 
 [tool.setuptools.package-data]
 "*" = ["*.js", "*.css"]
