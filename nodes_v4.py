@@ -25,7 +25,7 @@ import comfy.model_management as mm
 import comfy.samplers
 import comfy.sample
 
-# JetBlock v4 imports
+# Core v4 imports
 from .jetblock_core_v4 import (
     JetBlockV4Config,
     DeterminismLevel,

@@ -1,6 +1,6 @@
 """
-JetBlock Nemotron Integration Module
-====================================
+Nemotron Integration Module
+============================
 
 Full Nemotron 3 optimization with:
 - Hybrid architecture detection (Mamba-2 / MoE / Attention)

@@ -14,7 +14,7 @@ from dataclasses import dataclass, field
 import pickle
 import logging
 
-logger = logging.getLogger("JetBlock.Cosmos")
+logger = logging.getLogger("DeterministicToolkit.Cosmos")
 
 # Try to import NVIDIA ML for temperature monitoring
 try:

@@ -287,7 +287,7 @@ class JetBlockWorkflowProfiler:
 
         if show_recommendations:
             report.append("\nRecommendations:")
-            report.append("  1. Enable JetBlock Auto-Optimizer for 10x speedup")
+            report.append("  1. Enable Deterministic Auto-Optimizer for 10x speedup")
             report.append("  2. Use Pattern Caching for repeated operations")
             report.append("  3. Enable Temporal Skipping for 5x faster sampling")
             report.append("  4. Consider batch processing for maximum throughput")
@@ -327,7 +327,7 @@ class JetBlockSafetySwitch:
 
     def safety_switch(self, enable_optimizations, reset_cache, verbose_logging):
         """
-        Master safety switch for all JetBlock optimizations
+        Master safety switch for all deterministic optimizations
         """
         import torch
         import gc
@@ -372,11 +372,11 @@ class JetBlockSafetySwitch:
 
         if verbose_logging:
             import logging
-            logging.getLogger("JetBlock").setLevel(logging.DEBUG)
+            logging.getLogger("DeterministicToolkit").setLevel(logging.DEBUG)
             status_messages.append("Verbose logging ENABLED")
         else:
             import logging
-            logging.getLogger("JetBlock").setLevel(logging.INFO)
+            logging.getLogger("DeterministicToolkit").setLevel(logging.INFO)
 
         return ("\n".join(status_messages),)
 

@@ -1,5 +1,5 @@
 """
-JetBlock Core v4.0 — Batch-Invariant Operators for Nemotron 3
+Deterministic Toolkit Core v4.1 — Batch-Invariant Operators
 =============================================================
 
 Implements ThinkingMachines batch-invariance fixes at the kernel level.
@@ -45,7 +45,7 @@ class DeterminismLevel(Enum):
 @dataclass
 class JetBlockV4Config:
     """
-    Configuration for JetBlock v4.0 operations.
+    Configuration for deterministic toolkit v4.1 operations.
 
     Aligned with:
     - ThinkingMachines batch-invariance research
@@ -679,12 +679,12 @@ class DynamicConvolutionKernel(nn.Module):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# JETBLOCK ATTENTION (COMBINED)
+# BATCH-INVARIANT ATTENTION (COMBINED)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class JetBlockAttentionV4(nn.Module):
     """
-    JetBlock v4.0 Attention Module.
+    Batch-Invariant Attention Module (v4.1).
 
     Combines:
     - Linear attention (O(N)) for long sequences

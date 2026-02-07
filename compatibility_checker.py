@@ -1,5 +1,5 @@
 """
-JetBlock Compatibility Checker and Auto-Adjuster
+Deterministic Toolkit Compatibility Checker and Auto-Adjuster
 Automatically detects workflow types and adjusts optimization levels
 """
 
@@ -9,7 +9,7 @@ from typing import Dict, Any, List, Tuple, Optional
 from dataclasses import dataclass
 import logging
 
-logger = logging.getLogger("JetBlock.Compatibility")
+logger = logging.getLogger("DeterministicToolkit.Compatibility")
 
 @dataclass
 class CompatibilityProfile:
@@ -113,7 +113,7 @@ class WorkflowAnalyzer:
                 skip_ratio=0.0,
                 safe_nodes=["CLIPTextEncode"],
                 unsafe_nodes=["TensorRTLoader", "VAEDecode_TensorRT"],
-                warnings=["TensorRT detected: JetBlock optimization reduced to avoid conflicts"]
+                warnings=["TensorRT detected: deterministic optimization reduced to avoid conflicts"]
             ),
             "custom": CompatibilityProfile(
                 name="Custom Nodes Heavy",
@@ -277,7 +277,7 @@ class CompatibilityReport:
 
         report = []
         report.append("=" * 60)
-        report.append("JETBLOCK COMPATIBILITY REPORT")
+        report.append("DETERMINISTIC TOOLKIT COMPATIBILITY REPORT")
         report.append("=" * 60)
         report.append(f"Workflow Type: {self.profile.name}")
         report.append(f"Optimization Level: {self.profile.optimization_level.upper()}")

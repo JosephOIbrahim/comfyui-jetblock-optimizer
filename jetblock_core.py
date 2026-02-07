@@ -1,5 +1,5 @@
 """
-JetBlock Core Implementation
+Deterministic Toolkit Core Implementation
 Optimized for RTX 4090 (24GB VRAM, 16384 CUDA cores)
 """
 
@@ -14,7 +14,7 @@ import logging
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("JetBlock")
+logger = logging.getLogger("DeterministicToolkit")
 
 # ThinkingMachines Batch-Invariant Configuration
 # Reference: https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/
@@ -67,7 +67,7 @@ class RTX4090Config:
     use_cudnn_benchmark: bool = True
     compile_mode: str = "max-autotune"
 
-    # JetBlock specific
+    # Deterministic toolkit specific
     linear_attention_threshold: int = 256
     cache_size_gb: int = 8  # Use 8GB for caching
     batch_size: int = 1  # FIXED: Use 1 for determinism (was 8)
@@ -204,7 +204,7 @@ class LinearAttentionKernel(nn.Module):
 
 class DynamicConvolutionKernel(nn.Module):
     """
-    Dynamic convolution from JetBlock paper
+    Dynamic convolution for content-adaptive filtering
     Adapts kernels based on input content
     """
 
@@ -254,7 +254,7 @@ class DynamicConvolutionKernel(nn.Module):
 
 class JetBlockAttention(nn.Module):
     """
-    The complete JetBlock attention module
+    The complete batch-invariant attention module
     Combines linear attention + dynamic convolution
     """
 
@@ -432,14 +432,14 @@ class JetBlockOptimizer:
         self.temporal_skipper = TemporalCoherenceSkipper(skip_ratio=0.8)
         self.optimized_modules = {}
 
-        logger.info("JetBlockOptimizer initialized for RTX 4090")
+        logger.info("Deterministic Toolkit initialized for RTX 4090")
         logger.info(f"Using {CONFIG.cache_size_gb}GB for pattern caching")
 
     def optimize_model(self, model: nn.Module, model_name: str = "model") -> nn.Module:
         """
-        Replace attention layers with JetBlock
+        Replace attention layers with batch-invariant versions
         """
-        logger.info(f"Optimizing {model_name} with JetBlock...")
+        logger.info(f"Optimizing {model_name} with batch-invariant attention...")
 
         # Count replaced modules
         replaced_count = 0
@@ -464,14 +464,14 @@ class JetBlockOptimizer:
                     # Use linear for dimensions > threshold
                     use_linear = dim > CONFIG.linear_attention_threshold
 
-                    # Replace with JetBlock
+                    # Replace with batch-invariant attention
                     jetblock = JetBlockAttention(dim, heads, use_linear)
                     setattr(parent, attr_name, jetblock)
                     replaced_count += 1
 
-                    logger.debug(f"Replaced {name} with JetBlock (linear={use_linear})")
+                    logger.debug(f"Replaced {name} with batch-invariant attention (linear={use_linear})")
 
-        logger.info(f"Replaced {replaced_count} attention modules with JetBlock")
+        logger.info(f"Replaced {replaced_count} attention modules with batch-invariant versions")
 
         # Store optimized model
         self.optimized_modules[model_name] = model

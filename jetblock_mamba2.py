@@ -1,6 +1,6 @@
 """
-JetBlock Mamba-2 Determinism Module
-===================================
+Mamba-2 Determinism Module
+===========================
 
 Provides deterministic Mamba-2 execution for Nemotron 3 hybrid architectures.
 

@@ -384,7 +384,7 @@ class CosmosDashboard:
         dashboard.append(f"Avg Temperature: {stats['optimization']['avg_temperature']:.1f}°C")
         dashboard.append(f"Avg Power Draw: {stats['optimization']['avg_power']:.1f}W")
 
-        # JetBlock Integration
+        # Deterministic Toolkit Integration
         optimizer = get_optimizer()
         cache_stats = optimizer.attention_cache.get_stats()
 
